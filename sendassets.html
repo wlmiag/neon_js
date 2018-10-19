@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./browser.js" type="text/javascript"></script>
+    <script src="./jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script>
+        const intent = Neon.api.makeIntent(
+            { NEO: 2, GAS: 0.0005 },
+            "AW7HjqTNQA7odZmYgeQniwjvk6fqJ5BbYZ"
+        );
+        // console.log(intent);
+        const apiProvider = new Neon.api.neoscan.instance("TestNet");
+        // console.log(apiProvider);
+        const acct = new Neon.wallet.Account(
+            "51ac482a65c9fb77a52a7f6fca20b8c0a2b6dcc6d491350c0cfaaec96190b06a"
+        );
+        // console.log(acct);
+        const config = {
+            api: apiProvider, // The network to perform the action, MainNet or TestNet.
+            account: acct, // This is the address which the assets come from.
+            intents: intent // This is where you want to send assets to.
+        };
+        Neon.api.sendAsset(config)
+            .then(config => {
+                console.log(config.response);
+            })
+            .catch(config => {
+                console.log(config);
+            });
+
+    </script>
+
+</head>
+<body>
+<p></p>
+</body>
+</html>

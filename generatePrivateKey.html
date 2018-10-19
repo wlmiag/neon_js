@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Demo</title>
+    <script src="browser.js" type="text/javascript"></script>
+
+    <script>
+
+         const privateKey = Neon.wallet.generatePrivateKey();
+         const publicKey = Neon.wallet.getPublicKeyFromPrivateKey(privateKey);
+         const scriptHash = Neon.wallet.getScriptHashFromPublicKey(publicKey);
+         const address = Neon.wallet.getAddressFromScriptHash(scriptHash);
+
+         const newAccount = new Neon.wallet.Account(privateKey)
+         console.log(newAccount)
+
+         ;(async function test(){
+             await newAccount.encrypt("abc")
+             console.log(newAccount.export())
+             const encryptedkey = newAccount.encrypted
+             document.getElementById("encryptedkey").innerText = "encryptedkey:" + encryptedkey
+
+         })()
+
+
+         ;(async ()=>{
+             await newAccount.encrypt("abc")
+             console.log(newAccount.export())
+             const encryptedkey = newAccount.encrypted
+             document.getElementById("encryptedkey").innerText = "encryptedkey:" + encryptedkey
+
+         })()
+         var ccc = new Neon.api.neoscan.getBalance('MainNet', "AKJQMHma9MA8KK5M8iQg8ASeg3KZLsjwvB")
+
+
+         window.onload=function(){
+             document.getElementById("info").innerText
+                 = "privateKey: " + privateKey + '\n\r'
+                 + "publicKey:" + publicKey  + '\n\r'
+                 + "scriptHash:" + scriptHash  + '\n\r'
+                 + "address:" + address  + '\n\r'
+                 + "newAccount:" + newAccount  + '\n\r'
+         }
+    </script>
+</head>
+
+<body>
+<div>
+    <input type="file" id="btn_file" style="display:none">
+    <button type="button" onclick="test()">test</button>
+    <br>
+    wallet:<input id="wallet" type="text" name="name"/><br>
+    <button type="button" onclick="Balance()">getBalance</button>
+    <br>
+    privateKey:<input id="privatekey" type="text" name="name"/><br>
+    targetWallet<input id="targetwallet" type="text" name="name"/><br>
+    gas:<input id="gas" type="text" name="name"/><br>
+    gold:<input id="gold" type="text" name="name"/><br>
+    <button type="button" onclick="signature()">sign Transaction</button>
+    <div id="info"> </div>
+    <div id="encryptedkey"> </div>
+</div>
+</body>
+
+</html>

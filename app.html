@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>app</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <script src="jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script src="bootstrap/js/bootstrap.js" type="text/javascript"></script>
+    <script src="browser.js" type="text/javascript"></script>
+
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-md-12">
+            <br>
+            <h2 class="text-center">NEO查询转账</h2>
+            <br>
+            <br>
+        </div>
+        <div class="col-md-12">
+            <div class="row-fluid">
+                <div class="col-md-6">
+                    <pre>
+wlm
+privateKey: 51ac482a65c9fb77a52a7f6fca20b8c0a2b6dcc6d491350c0cfaaec96190b06a
+publicKey: 0359fa3ef46d85227b753a9a6711292f067538380e8389a85152809b47a908650f
+scriptHash: ebd5fe2f881ef72e327e5c82980ec329ad69ceb9
+address: AYiKvoLByuxqpdGKGvt7CzTjnd1qBSyWER</pre>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <a class="btn btn-default"
+                               onclick="query_balance_ajax('AYiKvoLByuxqpdGKGvt7CzTjnd1qBSyWER','yue1')">查询余额</a>
+                        </div>
+                        <div class="panel-body">
+                            <p id="yue1">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <pre>
+ln
+privateKey: 1c0dd3783dbda30ea28d576a08b1da580588401813e4e2897497b6ff50826d44
+publicKey: 031ff1587a22f95a77ceb37e37941e3f513f7bc654c9f31c911cd81cc0fbfa4de2
+scriptHash: 3e18359c32a656b1c7feadfc3883f3a677c63d9d
+address: AW7HjqTNQA7odZmYgeQniwjvk6fqJ5BbYZ</pre>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <a class="btn btn-default"
+                               onclick="query_balance_ajax('AW7HjqTNQA7odZmYgeQniwjvk6fqJ5BbYZ','yue2')">查询余额</a>
+                        </div>
+                        <div class="panel-body">
+                            <p id="yue2">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <a class="btn btn-default" onclick="sendAssets()">转账</a>
+                            <span id="su" class="label label-success">成功</span>
+                            <span id="fa" class="label label-danger">失败</span>
+                            <span id="me" class="label label-danger">error</span>
+                        </div>
+                        <div class="panel-body">
+                            <input type="text" id="pk" class="col-sm-6 form-control" placeholder="源私钥 privateKey">
+                            <input type="text" id="ad" class="col-sm-6 form-control" placeholder="目标地址 address">
+                            <input type="text" id="neo" class="col-sm-6 form-control" placeholder="转出NEO数量">
+                            <input type="text" id="gas" class="col-sm-6 form-control" placeholder="转出GAS数量">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#su").hide()
+    $("#fa").hide()
+    $("#me").hide()
+
+    function query_balance(address, pid) {
+        var url = "https://neoscan-testnet.io/api/test_net/"
+        Neon.api.neoscan.getBalance(url, address).then(function (res) {
+            // console.log(res)
+            console.log("balance:")
+            var a_unspent_neo = res.assets.NEO.unspent
+            var a_unspent_gas = res.assets.GAS.unspent
+            var sum_neo = 0
+            var sum_gas = 0
+            for (neo_value in a_unspent_neo) {
+                sum_neo = sum_neo + parseInt(a_unspent_neo[neo_value].value)
+            }
+            for (gas_value in a_unspent_gas) {
+                sum_gas = sum_gas + parseFloat(a_unspent_gas[gas_value].value)
+            }
+            console.log("NEO:" + sum_neo)
+            console.log("GAS:" + sum_gas)
+            if (pid === "yue1") {
+                $("#yue1").html("NEO:" + sum_neo + "<br>" + "GAS:" + sum_gas)
+            }
+            if (pid === "yue2") {
+                $("#yue2").html("NEO:" + sum_neo + "<br>" + "GAS:" + sum_gas)
+            }
+        })
+    }
+
+    function query_balance_ajax(address, pid) {
+        var url_a = "https://neoscan-testnet.io/api/test_net/v1/get_balance/" + address
+        $(function () {
+            $.ajax({
+                type: "GET",
+                url: url_a,
+                dataType: "json",
+                success: function (result) {
+                    // console.log(result);
+                    // console.log(result.balance[0].asset_symbol + ": " + result.balance[0].amount)
+                    // console.log(result.balance[1].asset_symbol + ": " + result.balance[1].amount)
+                    var a = result.balance[0].asset_symbol + ": " + result.balance[0].amount
+                    var b = result.balance[1].asset_symbol + ": " + result.balance[1].amount
+                    if (pid === "yue1") {
+                        $("#yue1").html(a + "<br>" + b)
+                    }
+                    if (pid === "yue2") {
+                        $("#yue2").html(a + "<br>" + b)
+                    }
+                }
+            });
+        })
+    }
+
+    function sendAssets() {
+        var privatekey = $("#pk").val()
+        var address = $("#ad").val()
+        var neo = $("#neo").val()
+        var gas = $("#gas").val()
+
+        const intent = Neon.api.makeIntent(
+            {NEO: neo, GAS: gas},
+            address
+        );
+        // console.log(intent);
+        const apiProvider = new Neon.api.neoscan.instance("TestNet");
+        // console.log(apiProvider);
+        const acct = new Neon.wallet.Account(
+            privatekey
+        );
+        // console.log(acct);
+        const config = {
+            api: apiProvider, // The network to perform the action, MainNet or TestNet.
+            account: acct, // This is the address which the assets come from.
+            intents: intent // This is where you want to send assets to.
+        };
+        Neon.api.sendAsset(config)
+            .then(config => {
+                $("#su").show()
+                $("#fa").hide()
+                $("#me").hide()
+                console.log(config.response);
+            })
+            .catch(err => {
+                $("#su").hide()
+                $("#fa").show()
+                $("#me").show()
+                console.log(err);
+                $("#me").html(err)
+            });
+    }
+</script>
+
+</body>
+</html>
