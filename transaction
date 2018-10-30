@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Demo</title>
+
+    <script src="browser.js" type="text/javascript"></script>
+    <script>
+        var address = "AW7HjqTNQA7odZmYgeQniwjvk6fqJ5BbYZ"      //l
+        var url = "https://neoscan-testnet.io/api/test_net/"
+
+        ;(async () => {
+            console.log(Neon)
+            const filledBalance = await Neon.api.neoscan.getBalance(url, address)
+            console.log('filledBalance:')
+            console.log(filledBalance)
+
+            if (filledBalance.assets.NEO.balance.toNumber() > 0) {
+                console.log('balance.toNumber:' + filledBalance.assets.NEO.balance.toNumber())
+                var tx = Neon.default.create.contractTx()
+
+                tx.addIntent("NEO", 1, "AYiKvoLByuxqpdGKGvt7CzTjnd1qBSyWER")
+                tx.addIntent("GAS", 0.00000003, "AYiKvoLByuxqpdGKGvt7CzTjnd1qBSyWER")
+                // tx.addOutput({
+                //     // assetId: "c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b",      //l
+                //     assetId: "9394e38b78d2be012fc351018d1331d9204c44315bd2bedf77a4407b82521be6",      //l
+                //     value: 1,
+                //     scriptHash: "3e18359c32a656b1c7feadfc3883f3a677c63d9d"      //l
+                // })
+                tx.addRemark('keyide')
+                console.log('remark.......................')
+                tx.calculate(filledBalance, null, 0)
+                tx.sign("1c0dd3783dbda30ea28d576a08b1da580588401813e4e2897497b6ff50826d44")     //w
+                console.log('tx')
+                console.log(tx)
+
+                const hash = tx.hash    //txid
+                console.log('hash：' + hash)
+                const serializedTx = tx.serialize(true);
+                console.log('serializedTx:', serializedTx)
+                const url2 = await Neon.api.neoscan.getRPCEndpoint(" https://neoscan-testnet.io/api/test_net/");
+                console.log('url2: ' + url2)
+
+
+                Neon.rpc.Query.sendRawTransaction(serializedTx)
+                    .execute(url2)
+                    .then(function (data) {
+                        console.log(data)
+                    })
+                    .catch(function (err) {
+                        console.log(err)
+                    })
+            }
+        })()
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
