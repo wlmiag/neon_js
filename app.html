@@ -30,10 +30,18 @@ address: AYiKvoLByuxqpdGKGvt7CzTjnd1qBSyWER</pre>
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <a class="btn btn-default"
-                               onclick="query_balance_ajax('AYiKvoLByuxqpdGKGvt7CzTjnd1qBSyWER','yue1')">查询余额</a>
+                               onclick="query_balance_ajax('AYiKvoLByuxqpdGKGvt7CzTjnd1qBSyWER','yue1')">查询余额ajax</a>
                         </div>
                         <div class="panel-body">
                             <p id="yue1">
+                            </p>
+                        </div>
+                        <div class="panel-body">
+                            <a class="btn btn-default"
+                               onclick="query_balance('AYiKvoLByuxqpdGKGvt7CzTjnd1qBSyWER','yue3')">查询余额api</a>
+                        </div>
+                        <div class="panel-body">
+                            <p id="yue3">
                             </p>
                         </div>
                     </div>
@@ -48,10 +56,18 @@ address: AW7HjqTNQA7odZmYgeQniwjvk6fqJ5BbYZ</pre>
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <a class="btn btn-default"
-                               onclick="query_balance_ajax('AW7HjqTNQA7odZmYgeQniwjvk6fqJ5BbYZ','yue2')">查询余额</a>
+                               onclick="query_balance_ajax('AW7HjqTNQA7odZmYgeQniwjvk6fqJ5BbYZ','yue2')">查询余额ajax</a>
                         </div>
                         <div class="panel-body">
                             <p id="yue2">
+                            </p>
+                        </div>
+                        <div class="panel-body">
+                            <a class="btn btn-default"
+                               onclick="query_balance('AW7HjqTNQA7odZmYgeQniwjvk6fqJ5BbYZ','yue4')">查询余额api</a>
+                        </div>
+                        <div class="panel-body">
+                            <p id="yue4">
                             </p>
                         </div>
                     </div>
@@ -96,14 +112,15 @@ address: AW7HjqTNQA7odZmYgeQniwjvk6fqJ5BbYZ</pre>
             }
             for (gas_value in a_unspent_gas) {
                 sum_gas = sum_gas + parseFloat(a_unspent_gas[gas_value].value)
+                // sum_gas = sum_gas + parseFloat(a_unspent_gas[gas_value].value).toFixed(8)
             }
             console.log("NEO:" + sum_neo)
             console.log("GAS:" + sum_gas)
-            if (pid === "yue1") {
-                $("#yue1").html("NEO:" + sum_neo + "<br>" + "GAS:" + sum_gas)
+            if (pid === "yue3") {
+                $("#yue3").html("NEO:" + sum_neo + "<br>" + "GAS:" + sum_gas)
             }
-            if (pid === "yue2") {
-                $("#yue2").html("NEO:" + sum_neo + "<br>" + "GAS:" + sum_gas)
+            if (pid === "yue4") {
+                $("#yue4").html("NEO:" + sum_neo + "<br>" + "GAS:" + sum_gas)
             }
         })
     }
